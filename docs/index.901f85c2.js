@@ -527,7 +527,10 @@ class Game {
         });
         document.body.appendChild(this.pixi.view);
         this.loader = new _pixiJs.Loader();
+        this.loader.load(()=>this.loadCompleted()
+        );
     }
+    loadCompleted() {}
 }
 
 },{"pixi.js":"dsYej","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"dsYej":[function(require,module,exports) {
