@@ -1,5 +1,6 @@
 import * as PIXI from 'pixi.js'
-
+import heroPlus from "./images/plus.png"
+import {Plus} from './plus'
 
 
 
@@ -13,6 +14,10 @@ export class Game {
         document.body.appendChild(this.pixi.view)
         this.loader = new PIXI.Loader()
 
+        this.loader.add('plusTexture', heroPlus)
+            
+        
+
 
 
         this.loader.load(() => this.loadCompleted())
@@ -20,6 +25,11 @@ export class Game {
     }
 
     loadCompleted(){
+        let plus = new Plus(this.loader.resources["plusTexture"].texture!, this.pixi)
+        this.pixi.stage.addChild(plus)
+      
 
-    }
+    }   
 }       
+
+let g = new Game()
