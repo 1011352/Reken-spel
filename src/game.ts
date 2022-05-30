@@ -6,7 +6,7 @@ import city2Image from "./images/city2.jpg"
 import { Plus } from './plus'
 import { Min } from './min'
 
-
+"hallo"
 
 export class Game {
     pixi: PIXI.Application
