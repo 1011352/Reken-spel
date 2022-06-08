@@ -7,7 +7,6 @@ import { Plus } from './plus'
 import { Min } from './min'
 
 
-
 export class Game {
     pixi: PIXI.Application
     loader: PIXI.Loader
