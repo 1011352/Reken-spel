@@ -7,17 +7,19 @@ import { Plus } from './plus'
 import { Min } from './min'
 
 
+
 export class Game {
     pixi: PIXI.Application
     loader: PIXI.Loader
     plus: Plus
     bg: PIXI.Sprite
-    bg2 :PIXI.Sprite
+    bg2: PIXI.Sprite
     x: number
     min: Min
     text = new PIXI.Text("Wat is 8 - 2", { fill: ["#ffffff"] })
-  
-    constructor() {
+
+    constructor(pixi : PIXI.Application) {
+        this._pixi = pixi
         this.pixi = new PIXI.Application({ width: 1000, height: 546 })
         document.body.appendChild(this.pixi.view)
         this.loader = new PIXI.Loader()
@@ -36,7 +38,7 @@ export class Game {
 
     }
 
-    bgChange(){
+    bgChange() {
 
     }
 
@@ -71,24 +73,24 @@ export class Game {
 
     randomInteger(min, max) {
         return Math.floor(Math.random() * (max - min + 1)) + min;
-        
-    
-        
+
+
+
     }
 
-    mathQues(){
-        let a = this.randomInteger(4,9)
-        let b = this.randomInteger(1,4)
+    mathQues() {
+        let a = this.randomInteger(4, 9)
+        let b = this.randomInteger(1, 4)
         let c = a - b
 
-        /*let text = new PIXI.Text("Wat is",a - b, { fill: ["#ffffff"] })
+        /*let text = new PIXI.Text("Wat is",a ,"-", b, { fill: ["#ffffff"] })
 
         text.x = 200
             text.y = 50
             this.pixi.stage.addChild(text)
             */
-        
-        console.log("wat is",a,"-", b)
+
+        console.log("wat is", a, "-", b)
 
         console.log("het antword is", c)
     }
@@ -102,31 +104,32 @@ export class Game {
 
         if (this.collision(this.plus, this.min)) {
 
+
             this.text.x = 200
             this.text.y = 200
             this.pixi.stage.addChild(this.text)
 
-            
 
-            
+
+
 
             this.mathQues()
-            
 
-        
+
+
 
         } else {
             this.pixi.stage.removeChild(this.text)
-            
-        }
-        
 
-        
+        }
+
+
+
 
 
 
     }
-    
+
 }
 
-new Game()
+
