@@ -4,6 +4,7 @@ import { Button } from "./button";
 
 export class Startmenu {
   private _pixi: PIXI.Application;
+  button: Button;
   constructor() {
     console.log("startmenu created");
 
@@ -15,17 +16,18 @@ export class Startmenu {
 
     document.body.appendChild(this._pixi.view)
 
-    const button = new Button(
+    this.button = new Button(
       this._pixi.screen.width / 2,
       this._pixi.screen.height / 2
     );
 
-    this._pixi.stage.addChild(button);
+    this._pixi.stage.addChild(this.button);
 
-    button.on("pointerdown", () => this.onClick())
+    this.button.on("pointerdown", () => this.onClick())
   }
 
   private onClick() {
+    this.button.destroy()
     new Game(this._pixi);
     
   }
