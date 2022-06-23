@@ -37063,7 +37063,7 @@ parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "Game", ()=>Game
 );
 var _pixiJs = require("pixi.js");
-var _plusPng = require("./images/plus.png");
+var _plusPng = require("./images/Plus.png");
 var _plusPngDefault = parcelHelpers.interopDefault(_plusPng);
 var _cityJpg = require("./images/city.jpg");
 var _cityJpgDefault = parcelHelpers.interopDefault(_cityJpg);
@@ -37234,8 +37234,8 @@ class Game {
         }*/ }
 }
 
-},{"pixi.js":"dsYej","./images/plus.png":"jWmLF","./images/city.jpg":"dp0wP","./images/min.png":"b45SD","./images/city2.jpg":"4z1Sl","./plus":"7WMnV","./min":"iNJhi","./background":"6FKGH","./pause":"hvJee","./unpause":"8Z81o","./button2":"hmPuO","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"jWmLF":[function(require,module,exports) {
-module.exports = require('./helpers/bundle-url').getBundleURL('8xX2B') + "plus.a530b1a6.png" + "?" + Date.now();
+},{"pixi.js":"dsYej","./images/Plus.png":"1OtKl","./images/city.jpg":"dp0wP","./images/min.png":"b45SD","./images/city2.jpg":"4z1Sl","./plus":"7WMnV","./min":"iNJhi","./background":"6FKGH","./pause":"hvJee","./unpause":"8Z81o","./button2":"hmPuO","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"1OtKl":[function(require,module,exports) {
+module.exports = require('./helpers/bundle-url').getBundleURL('8xX2B') + "Plus.077c2fb5.png" + "?" + Date.now();
 
 },{"./helpers/bundle-url":"lgJ39"}],"lgJ39":[function(require,module,exports) {
 "use strict";

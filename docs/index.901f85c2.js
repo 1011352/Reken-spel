@@ -523,41 +523,85 @@ var _plusPng = require("./images/plus.png");
 var _plusPngDefault = parcelHelpers.interopDefault(_plusPng);
 var _cityJpg = require("./images/city.jpg");
 var _cityJpgDefault = parcelHelpers.interopDefault(_cityJpg);
-var _minPng = require("./images/min.png");
-var _minPngDefault = parcelHelpers.interopDefault(_minPng);
-var _city2Jpg = require("./images/city2.jpg");
-var _city2JpgDefault = parcelHelpers.interopDefault(_city2Jpg);
+var _1EuroPng = require("./images/1euro.png");
+var _1EuroPngDefault = parcelHelpers.interopDefault(_1EuroPng);
+var _city4Jpg = require("./images/city4.jpg");
+var _city4JpgDefault = parcelHelpers.interopDefault(_city4Jpg);
 var _plus = require("./plus");
 var _min = require("./min");
+var _background = require("./background");
+var _pause = require("./pause");
+var _unpause = require("./unpause");
+var _button2 = require("./button2");
 class Game {
-    text = new _pixiJs.Text("Wat is 8 - 2", {
-        fill: [
-            "#ffffff"
-        ]
-    });
-    constructor(){
+    mins = [];
+    isDone = false;
+    paused = false;
+    container = new _pixiJs.Container();
+    constructor(pixi){
         this.pixi = new _pixiJs.Application({
-            width: 1000,
-            height: 546
+            width: 1920,
+            height: 1080
         });
         document.body.appendChild(this.pixi.view);
         this.loader = new _pixiJs.Loader();
-        this.loader.add('plusTexture', _plusPngDefault.default).add('cityTexture', _cityJpgDefault.default).add('minTexture', _minPngDefault.default).add('city2Texture', _city2JpgDefault.default);
-        this.loader.load(()=>this.loadCompleted()
+        this.pixi.loader.add('plusTexture', _plusPngDefault.default).add('cityTexture', _cityJpgDefault.default).add('minTexture', _1EuroPngDefault.default).add('city2Texture', _city4JpgDefault.default);
+        //.add('city4Texture', city4Image)
+        this.pixi.loader.load(()=>this.loadCompleted()
         );
     }
-    bgChange() {}
     loadCompleted() {
-        this.bg = new _pixiJs.Sprite(this.loader.resources["cityTexture"].texture);
+        this.style = new _pixiJs.TextStyle({
+            breakWords: true,
+            dropShadow: true,
+            fill: "white",
+            fontFamily: "Arial Black",
+            fontWeight: "bold",
+            strokeThickness: 3
+        });
+        this.bg = new _background.Background(this.pixi.loader.resources["city2Texture"].texture, this.pixi.screen.width, this.pixi.screen.height);
         this.pixi.stage.addChild(this.bg);
-        this.bg2 = new _pixiJs.Sprite(this.loader.resources["city2Texture"].texture);
-        this.pixi.stage.addChild(this.bg2);
-        this.min = new _min.Min(this.loader.resources["minTexture"].texture, this);
-        this.pixi.stage.addChild(this.min);
-        this.plus = new _plus.Plus(this.loader.resources["plusTexture"].texture, this);
+        for(let i = 0; i < 8; i++){
+            this.min = new _min.Min(this.pixi.loader.resources["minTexture"].texture, this);
+            this.pixi.stage.addChild(this.min);
+            this.mins.push(this.min);
+        }
+        this.plus = new _plus.Plus(this.pixi.loader.resources["plusTexture"].texture, this);
         this.pixi.stage.addChild(this.plus);
+        this.sButton = new _unpause.StartButton(this.pixi.screen.width / 15, this.pixi.screen.height / 35);
+        this.pButton = new _pause.PauseButton(this.pixi.screen.width / 15, this.pixi.screen.height / 35);
+        this.pixi.stage.addChild(this.pButton);
+        this.pButton.on("pointerdown", ()=>this.onClickP()
+        );
+        this.sButton.on("pointerdown", ()=>this.onClickS()
+        );
         this.pixi.ticker.add((delta)=>this.update(delta)
         );
+        let score2 = new _pixiJs.Text("Score   =", this.style);
+        score2.x = 1700;
+        score2.y = 20;
+        this.pixi.stage.addChild(score2);
+        this.scoreNumber = 0;
+        this.score = new _pixiJs.Text(this.scoreNumber, this.style);
+        this.score.x = 1850;
+        this.score.y = 20;
+        this.pixi.stage.addChild(this.score);
+    }
+    onClickP() {
+        if (!this.paused) {
+            this.pixi.stage.removeChild(this.pButton);
+            this.pixi.stage.addChild(this.sButton);
+            this.pixi.ticker.speed = 0;
+            this.paused = true;
+        }
+    }
+    onClickS() {
+        if (this.paused) {
+            this.pixi.ticker.speed = 1;
+            this.pixi.stage.removeChild(this.sButton);
+            this.pixi.stage.addChild(this.pButton);
+            this.paused = false;
+        }
     }
     collision(a, b) {
         const bounds1 = a.getBounds();
@@ -568,30 +612,89 @@ class Game {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
     mathQues() {
-        let a = this.randomInteger(4, 9);
-        let b = this.randomInteger(1, 4);
-        let c = a - b;
-        /*let text = new PIXI.Text("Wat is",a - b, { fill: ["#ffffff"] })
-
-        text.x = 200
-            text.y = 50
-            this.pixi.stage.addChild(text)
-            */ console.log("wat is", a, "-", b);
-        console.log("het antword is", c);
+        this.a = this.randomInteger(4, 9);
+        this.b = this.randomInteger(1, 4);
+        this.c = this.a - this.b;
+        let d = this.randomInteger(1, 10);
+        let e = this.randomInteger(11, 20);
+        this.text = new _pixiJs.Text("sample", this.style);
+        this.text.x = 630;
+        this.text.y = 275;
+        this.container.addChild(this.text);
+        console.log("wat is", this.a, "-", this.b);
+        console.log("het antword is", this.c);
+        this.text.text = " wat is " + this.a + "-" + this.b;
+        for(let i = 0; i < 1; i++){
+            this.min = new _min.Min(this.pixi.loader.resources["minTexture"].texture, this);
+            this.pixi.stage.addChild(this.min);
+            this.mins.push(this.min);
+        }
+        this.addButton(d + 2, 3);
+        this.addButton(d - 1, 2.3);
+        this.addButton(this.c, 4.3);
+        this.button.on("pointerdown", ()=>this.onClick2()
+        );
+    }
+    onClick2() {
+        if (this.c === this.c) {
+            let text = new _pixiJs.Text("Goed!", this.style);
+            text.x = 350;
+            text.y = 400;
+            this.pixi.stage.addChild(text);
+            this.pixi.stage.removeChild(this.text);
+            this.scoreNumber += 1;
+            this.score.text = Number(this.score.text) + 1;
+            this.onClickS();
+            this.pixi.stage.removeChild(this.container);
+        } else {
+            let text = new _pixiJs.Text("Probeer het Nog een Keer", this.style);
+            text.x = 350;
+            text.y = 400;
+            this.pixi.stage.addChild(text);
+            this.pixi.stage.removeChild(this.text);
+            this.score.text = Number(this.score.text) - 1;
+            this.button.destroy();
+        }
+    }
+    addButton(answer, move) {
+        this.button = new _button2.Button2(this.pixi.screen.width / move, this.pixi.screen.height / 3);
+        this.button.question.text = answer;
+        this.container.addChild(this.button);
+        this.pixi.stage.addChild(this.container);
     }
     update(delta) {
+        //this.bg.update(delta)
         this.plus.update(delta);
-        if (this.collision(this.plus, this.min)) {
-            this.text.x = 200;
-            this.text.y = 200;
-            this.pixi.stage.addChild(this.text);
+        for(let g = 0; g < this.mins.length; g++)if (this.collision(this.plus, this.mins[g])) {
+            //this.pixi.stage.removeChild(this.min)
+            this.pixi.ticker.speed = 0;
             this.mathQues();
-        } else this.pixi.stage.removeChild(this.text);
-    }
+            this.onClickP();
+            this.mins[g].destroy();
+            this.mins = this.mins.filter((ge)=>ge != this.mins[g]
+            );
+        }
+    /*for (const min of this.mins) {
+
+            if (this.collision(this.plus, min)) {
+    
+                if (!this.isDone) {
+
+                    this.isDone = true;
+                    this.mathQues()
+                }
+    
+            } else {
+                this.pixi.stage.removeChild(this.text)
+
+                this.isDone = false
+
+            }
+        }*/ }
 }
 new Game();
 
-},{"pixi.js":"dsYej","./images/plus.png":"hhba6","./images/city.jpg":"ivwY1","./images/min.png":"k7Dlr","./images/city2.jpg":"j9BFL","./plus":"7WMnV","./min":"iNJhi","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"dsYej":[function(require,module,exports) {
+},{"pixi.js":"dsYej","./plus":"7WMnV","./min":"iNJhi","./background":"6FKGH","./pause":"hvJee","./unpause":"8Z81o","./button2":"hmPuO","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./images/city4.jpg":"3Dqt7","./images/plus.png":"hhba6","./images/city.jpg":"ivwY1","./images/1euro.png":"kpuwJ"}],"dsYej":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "utils", ()=>_utils
@@ -37106,53 +37209,7 @@ function __extends(d, b) {
     return AnimatedSprite1;
 }(_sprite.Sprite);
 
-},{"@pixi/core":"7PEF8","@pixi/sprite":"9mbxh","@pixi/ticker":"8ekG7","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"hhba6":[function(require,module,exports) {
-module.exports = require('./helpers/bundle-url').getBundleURL('emE5o') + "plus.a530b1a6.png" + "?" + Date.now();
-
-},{"./helpers/bundle-url":"lgJ39"}],"lgJ39":[function(require,module,exports) {
-"use strict";
-var bundleURL = {};
-function getBundleURLCached(id) {
-    var value = bundleURL[id];
-    if (!value) {
-        value = getBundleURL();
-        bundleURL[id] = value;
-    }
-    return value;
-}
-function getBundleURL() {
-    try {
-        throw new Error();
-    } catch (err) {
-        var matches = ('' + err.stack).match(/(https?|file|ftp):\/\/[^)\n]+/g);
-        if (matches) // The first two stack frames will be this function and getBundleURLCached.
-        // Use the 3rd one, which will be a runtime in the original bundle.
-        return getBaseURL(matches[2]);
-    }
-    return '/';
-}
-function getBaseURL(url) {
-    return ('' + url).replace(/^((?:https?|file|ftp):\/\/.+)\/[^/]+$/, '$1') + '/';
-} // TODO: Replace uses with `new URL(url).origin` when ie11 is no longer supported.
-function getOrigin(url) {
-    var matches = ('' + url).match(/(https?|file|ftp):\/\/[^/]+/);
-    if (!matches) throw new Error('Origin not found');
-    return matches[0];
-}
-exports.getBundleURL = getBundleURLCached;
-exports.getBaseURL = getBaseURL;
-exports.getOrigin = getOrigin;
-
-},{}],"ivwY1":[function(require,module,exports) {
-module.exports = require('./helpers/bundle-url').getBundleURL('emE5o') + "city.3dfee61f.jpg" + "?" + Date.now();
-
-},{"./helpers/bundle-url":"lgJ39"}],"k7Dlr":[function(require,module,exports) {
-module.exports = require('./helpers/bundle-url').getBundleURL('emE5o') + "min.7d0a9b7e.png" + "?" + Date.now();
-
-},{"./helpers/bundle-url":"lgJ39"}],"j9BFL":[function(require,module,exports) {
-module.exports = require('./helpers/bundle-url').getBundleURL('emE5o') + "city2.1ff0dd0b.jpg" + "?" + Date.now();
-
-},{"./helpers/bundle-url":"lgJ39"}],"7WMnV":[function(require,module,exports) {
+},{"@pixi/core":"7PEF8","@pixi/sprite":"9mbxh","@pixi/ticker":"8ekG7","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"7WMnV":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "Plus", ()=>Plus
@@ -37164,8 +37221,8 @@ class Plus extends _pixiJs.Sprite {
     constructor(texture, game){
         super(texture);
         this.game = game;
-        this.x = Math.random() * game.pixi.screen.right;
-        this.y = Math.random() * game.pixi.screen.bottom;
+        this.x = 0;
+        this.y = 0;
         window.addEventListener("keydown", (e)=>this.onKeyDown(e)
         );
         window.addEventListener("keyup", (e)=>this.onKeyUp(e)
@@ -37215,6 +37272,9 @@ class Plus extends _pixiJs.Sprite {
     }
     keepInScreen() {
         if (this.getBounds().left > this.game.pixi.screen.right) this.x = -this.getBounds().width;
+        if (this.getBounds().top > this.game.pixi.screen.bottom) this.y = -this.getBounds().height;
+        if (this.getBounds().bottom < this.game.pixi.screen.top) this.y = this.getBounds().height + 360;
+        if (this.getBounds().right < this.game.pixi.screen.left) this.x = this.getBounds().width + 1000;
     }
     update(delta) {
         this.x += this.xspeed * delta;
@@ -37233,13 +37293,200 @@ class Min extends _pixiJs.Sprite {
     constructor(texture, game){
         super(texture);
         this.game = game;
-        this.width = 150;
-        this.height = 150;
-        this.x = Math.random() * game.pixi.screen.right;
-        this.y = Math.random() * game.pixi.screen.bottom;
+        this.x = Math.random() * game.pixi.screen.right + 1;
+        this.y = Math.random() * game.pixi.screen.bottom + 1;
+    //window.addEventListener("keydown", (e: KeyboardEvent) => this.onKeyDown(e))
+    //window.addEventListener("keyup", (e: KeyboardEvent) => this.onKeyUp(e))
     }
 }
 
-},{"pixi.js":"dsYej","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["8Atcy","edeGs"], "edeGs", "parcelRequirea0e5")
+},{"pixi.js":"dsYej","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"6FKGH":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "Background", ()=>Background
+);
+var _pixiJs = require("pixi.js");
+class Background extends _pixiJs.Sprite {
+    xmove = 0;
+    constructor(texture, game){
+        super(texture);
+        this.game = game;
+        window.addEventListener("keydown", (e)=>this.onKeyDown(e)
+        );
+        window.addEventListener("keyup", (e)=>this.onKeyUp(e)
+        );
+    }
+    onKeyDown(e) {
+        switch(e.key.toUpperCase()){
+            case "A":
+            case "ARROWLEFT":
+                this.xmove = 4;
+                break;
+            case "D":
+            case "ARROWRIGHT":
+                this.xmove = -4;
+        }
+    }
+    onKeyUp(e) {
+        switch(e.key.toUpperCase()){
+            case " ":
+                break;
+            case "A":
+            case "D":
+            case "ARROWLEFT":
+            case "ARROWRIGHT":
+                this.xmove = 0;
+        }
+    }
+    update(delta) {
+        this.x += this.xmove * delta;
+        this.keepInScreen1();
+    }
+    keepInScreen1() {
+        if (this.getBounds().left > this.game.pixi.screen.right) this.x = 0;
+        if (this.getBounds().right < this.game.pixi.screen.left) this.x = 1000;
+    }
+}
+
+},{"pixi.js":"dsYej","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"hvJee":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "PauseButton", ()=>PauseButton
+);
+var _pixiJs = require("pixi.js");
+class PauseButton extends _pixiJs.Graphics {
+    constructor(x, y){
+        super();
+        this.x = x;
+        this.y = y;
+        //this.beginFill(0x0000ff);
+        //this.drawRoundedRect(-100, -25, 200, 50, 15);
+        //this.endFill();
+        const pauseText = new _pixiJs.Text("Pause Game", {
+            breakWords: true,
+            dropShadow: true,
+            fill: "white",
+            fontFamily: "Arial Black",
+            fontWeight: "bold",
+            strokeThickness: 3
+        });
+        pauseText.x = 0;
+        pauseText.y = 0;
+        pauseText.anchor.set(0.5);
+        this.addChild(pauseText);
+        this.buttonMode = true;
+        this.interactive = true;
+    }
+}
+
+},{"pixi.js":"dsYej","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"8Z81o":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "StartButton", ()=>StartButton
+);
+var _pixiJs = require("pixi.js");
+class StartButton extends _pixiJs.Graphics {
+    constructor(x, y){
+        super();
+        this.x = x;
+        this.y = y;
+        //this.beginFill(0x0000ff);
+        //this.drawRoundedRect(-100, -25, 200, 50, 15);
+        //this.endFill();
+        const UnPauseText = new _pixiJs.Text("Unpause Game", {
+            breakWords: true,
+            dropShadow: true,
+            fill: "white",
+            fontFamily: "Arial Black",
+            fontWeight: "bold",
+            strokeThickness: 3
+        });
+        UnPauseText.x = 0;
+        UnPauseText.y = 0;
+        UnPauseText.anchor.set(0.5);
+        this.addChild(UnPauseText);
+        this.buttonMode = true;
+        this.interactive = true;
+    }
+}
+
+},{"pixi.js":"dsYej","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"hmPuO":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "Button2", ()=>Button2
+);
+var _pixiJs = require("pixi.js");
+class Button2 extends _pixiJs.Graphics {
+    constructor(x, y){
+        super();
+        this.x = x;
+        this.y = y;
+        this.beginFill(0);
+        this.drawRoundedRect(0, 0, 150, 80, 15);
+        this.endFill();
+        this.question = new _pixiJs.Text("Start Game", {
+            breakWords: true,
+            dropShadow: true,
+            fill: "white",
+            fontFamily: "Arial Black",
+            fontWeight: "bold",
+            strokeThickness: 3
+        });
+        this.question.x = this.getBounds().width / 2;
+        this.question.y = this.getBounds().height / 2;
+        this.question.anchor.set(0.5);
+        this.addChild(this.question);
+        this.buttonMode = true;
+        this.interactive = true;
+    }
+}
+
+},{"pixi.js":"dsYej","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"3Dqt7":[function(require,module,exports) {
+module.exports = require('./helpers/bundle-url').getBundleURL('emE5o') + "city4.9ee1397a.jpg" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"lgJ39"}],"lgJ39":[function(require,module,exports) {
+"use strict";
+var bundleURL = {};
+function getBundleURLCached(id) {
+    var value = bundleURL[id];
+    if (!value) {
+        value = getBundleURL();
+        bundleURL[id] = value;
+    }
+    return value;
+}
+function getBundleURL() {
+    try {
+        throw new Error();
+    } catch (err) {
+        var matches = ('' + err.stack).match(/(https?|file|ftp):\/\/[^)\n]+/g);
+        if (matches) // The first two stack frames will be this function and getBundleURLCached.
+        // Use the 3rd one, which will be a runtime in the original bundle.
+        return getBaseURL(matches[2]);
+    }
+    return '/';
+}
+function getBaseURL(url) {
+    return ('' + url).replace(/^((?:https?|file|ftp):\/\/.+)\/[^/]+$/, '$1') + '/';
+} // TODO: Replace uses with `new URL(url).origin` when ie11 is no longer supported.
+function getOrigin(url) {
+    var matches = ('' + url).match(/(https?|file|ftp):\/\/[^/]+/);
+    if (!matches) throw new Error('Origin not found');
+    return matches[0];
+}
+exports.getBundleURL = getBundleURLCached;
+exports.getBaseURL = getBaseURL;
+exports.getOrigin = getOrigin;
+
+},{}],"hhba6":[function(require,module,exports) {
+module.exports = require('./helpers/bundle-url').getBundleURL('emE5o') + "plus.a530b1a6.png" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"lgJ39"}],"ivwY1":[function(require,module,exports) {
+module.exports = require('./helpers/bundle-url').getBundleURL('emE5o') + "city.3dfee61f.jpg" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"lgJ39"}],"kpuwJ":[function(require,module,exports) {
+module.exports = require('./helpers/bundle-url').getBundleURL('emE5o') + "1euro.5889f920.png" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"lgJ39"}]},["8Atcy","edeGs"], "edeGs", "parcelRequirea0e5")
 
 //# sourceMappingURL=index.901f85c2.js.map
